@@ -13,20 +13,20 @@ Before building `VolkoCompute`, ensure you have the following installed:
 ## Build Instructions
 
 ### Build Shared Library
-mkdir build && cd build
-cmake -DBUILD_SHARED_LIBS=ON ..
+mkdir build && cd build\
+cmake -DBUILD_SHARED_LIBS=ON ..\
 cmake --build .
 
 ### Build Static Library:
-mkdir build && cd build
-cmake -DBUILD_SHARED_LIBS=OFF ..
+mkdir build && cd build\
+cmake -DBUILD_SHARED_LIBS=OFF ..\
 cmake --build .
 
 ### Install:
 cmake --install .
 
 ### Integration:
-install(EXPORT VolkoComputeTargets
-    FILE VolkoComputeConfig.cmake
-    DESTINATION lib/cmake/VolkoCompute
+install(EXPORT VolkoComputeTargets\
+    &nbsp;&nbsp;FILE VolkoComputeConfig.cmake\
+    &nbsp;&nbsp;DESTINATION lib/cmake/VolkoCompute\
 )
