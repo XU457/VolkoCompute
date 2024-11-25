@@ -39,7 +39,7 @@ private:
     VkDescriptorSetLayout computeDescriptorSetLayout;
     VkPipelineLayout computePipelineLayotut;
     VkCommandPool commandPool;
-    std::vector<VkDescriptorSet> computeDescriptorsSets;
+    std::vector<VkDescriptorSet> computeDescriptorSets;
     std::vector<VkSemaphore> computeFinishedSemphore;
     std::vector<VkFence> computeInFlightFences;
 
@@ -47,7 +47,7 @@ private:
     // - Create functions
     void createInstance();
     void createLogicalDevice();
-    void createComputeDescriptorSetLayout();
+    void createUniversalComputeDescriptorSetLayout();
 
     // - Get functions
     void getPhysicalDevice();

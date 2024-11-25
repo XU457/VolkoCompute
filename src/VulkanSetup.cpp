@@ -3,7 +3,15 @@
 #include <assert.h>
 #include <set>
 
-void VulkanSetup::createInstance() {
+void VulkanSetup::initVulkan(int *status) {
+    createInstance();
+    getPhysicalDevice();
+    createLogicalDevice();
+    createUniversalComputeDescriptorSetLayout();
+}
+
+void VulkanSetup::createInstance()
+{
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Volko Compute";
@@ -102,6 +110,35 @@ void VulkanSetup::createLogicalDevice() {
 }
 
 // Created and called only once unlike computedescriptorSet
-void VulkanSetup::createComputeDescriptorSetLayout() {
+void VulkanSetup::createUniversalComputeDescriptorSetLayout() {
+    std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+
+    // Uniform Buffer Binding. Used for making uniform data which is accessible to shaders through Uniform Buffer Object.
+    VkDescriptorSetLayoutBinding uniformBufferBinding = {};
+    uniformBufferBinding.binding = 0; // See the GLSI of it
+    uniformBufferBinding.descriptorCount = MAX_UNIFORM_BUFFERS;
+    uniformBufferBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uniformBufferBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+    layoutBindings.push_back(uniformBufferBinding);
+
+    // Storage Buffers Bindings (Generic)
+    for (uint32_t i = 1; i < MAX_STORAGE_BUFFERS; i++) {
+        VkDescriptorSetLayoutBinding storageBufferBinding = {};
+        storageBufferBinding.binding = 1;
+        uniformBufferBinding.descriptorCount = MAX_STORAGE_BUFFERS;
+        uniformBufferBinding.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+        uniformBufferBinding.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+        layoutBindings.push_back(storageBufferBinding);
+    }
+
+    // Descriptor set layout
+    VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    layoutInfo.bindingCount = static_cast<uint32_t>(layoutBindings.size());
+    layoutInfo.pBindings = layoutBindings.data();
     
+    VkResult result = vkCreateDescriptorSetLayout(mainDevice.logicalDevice, &layoutInfo, nullptr, &computeDescriptorSetLayout);
+    if (result != VK_SUCCESS) {
+        throw std::runtime_error("UNABLE TO CREATE DESCRIPTOR SET LAYOUT!!");
+    }
 }
